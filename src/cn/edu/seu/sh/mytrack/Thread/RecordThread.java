@@ -3,6 +3,7 @@ package cn.edu.seu.sh.mytrack.Thread;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Arrays;
 
 import cn.edu.seu.sh.mytrack.Config.CommonConfig;
 
@@ -43,20 +44,22 @@ public class RecordThread  extends Thread {
     }
 
     private void recodeAndSend(){
-        byte [] buffer = new byte[CommonConfig.bufferSize];
-        audioRecord.read(buffer,0,buffer.length);
+        byte [] buffer = new byte[1024];
+        int read = audioRecord.read(buffer,0,buffer.length);
 
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+        DatagramPacket packet = new DatagramPacket(buffer, read);
         try{
-            InetAddress ip = InetAddress.getByName(CommonConfig.CLIENT_A_IP_ADDRESS.trim());//;;SERVER_IP_ADDRESS
+            InetAddress ip = InetAddress.getByName(CommonConfig.SERVER_IP_ADDRESS.trim());//;;CLIENT_A_IP_ADDRESS
+            int port = CommonConfig.AUDIO_SERVER_UP_PORT;
+            
+//            InetAddress ip = InetAddress.getByName(CommonConfig.CLIENT_A_IP_ADDRESS.trim());//;;
+//            int port = CommonConfig.CLIENT_A_PORT;
+            
             packet.setAddress(ip);
-            packet.setPort(CommonConfig.CLIENT_A_PORT);//; AUDIO_SERVER_UP_PORT
+            packet.setPort(port);//; 
             socket.send(packet);
-            if(n++<10){
-            	System.out.println("SendPacket:--->"+n+"length:"+packet.getLength()+
-            			"content:"+buffer.toString());
-            	System.out.println("RecordThread-->Send Audio Packet to "+ip.toString());
-            }
+            System.out.println("ClientSendPacket:--->to"+packet.getAddress()+"length:"+packet.getLength()+
+            			"content:"+Arrays.toString(packet.getData()));
             
             
         }catch (Exception e){
@@ -68,7 +71,7 @@ public class RecordThread  extends Thread {
         keepRunning = false;
     }
 
-    private void release(){
+    public void release(){
         if(socket!=null){
             socket.close();
             socket = null;

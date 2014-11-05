@@ -15,7 +15,7 @@ public class MyActivity extends Activity{
 
     private Button startEncodeButton, stopEncodeButton;
     private Button startPlayButton, stopPlayButton;
-    private RecordThread recodeThread = null;
+    private RecordThread recordThread = null;
     private ReceiveThread receiveThread = null;
 
     @Override
@@ -32,9 +32,9 @@ public class MyActivity extends Activity{
             public void onClick(View v) {
                 startEncodeButton.setEnabled(false);
                 stopEncodeButton.setEnabled(true);
-                if(recodeThread == null){
-                    recodeThread = new RecordThread();
-                    recodeThread.start();
+                if(recordThread == null){
+                    recordThread = new RecordThread();
+                    recordThread.start();
                 }
             }
         });
@@ -45,9 +45,11 @@ public class MyActivity extends Activity{
             public void onClick(View v) {
                 stopEncodeButton.setEnabled(false);
                 startEncodeButton.setEnabled(true);
-                if(recodeThread != null){
-                    recodeThread.stopThread();
-                    recodeThread = null;
+                if(recordThread != null){
+                    recordThread.stopThread();
+                    recordThread.release();
+                    recordThread = null;
+                    
                 }
             }
         });
@@ -74,7 +76,8 @@ public class MyActivity extends Activity{
                 stopPlayButton.setEnabled(false);
                 startPlayButton.setEnabled(true);
                 if(receiveThread!=null){
-                    receiveThread.stopThread();
+                    receiveThread.stopThread();                    
+                    receiveThread.release();
                     receiveThread=null;
                 }
             }

@@ -2,6 +2,7 @@ package cn.edu.seu.sh.mytrack.Thread;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.Arrays;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -15,6 +16,7 @@ public class ReceiveThread extends Thread {
     private DatagramSocket socket = null;
     private AudioTrack audioTrack = null;
     private int minSize = 0;
+    int n = 0;
 
     @Override
     public void run() {
@@ -47,19 +49,23 @@ public class ReceiveThread extends Thread {
     }
 
     private void receiveAndPlay(){
-        byte[] packetBuffer = new byte[32];
+        byte[] packetBuffer = new byte[1024];
         DatagramPacket packet = new DatagramPacket(packetBuffer,packetBuffer.length);
 
         try {
            socket.receive(packet);
 //            Log.d("ReceiveThread","Receive Audio Packet!");
-           audioTrack.write(packetBuffer,0,packetBuffer.length);
+//           if(n++<100){
+           	System.out.println("ClientReceivePacket:--->from"+packet.getAddress()+"length:"+packet.getLength()+
+           			"content:"+Arrays.toString(packet.getData()));
+//           }
+           audioTrack.write(packet.getData(),0,packet.getData().length);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void release(){
+    public void release(){
         if(socket!=null){
             socket.close();
             socket = null;
