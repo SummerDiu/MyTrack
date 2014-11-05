@@ -54,11 +54,9 @@ public class ReceiveThread extends Thread {
 
         try {
            socket.receive(packet);
-//            Log.d("ReceiveThread","Receive Audio Packet!");
-//           if(n++<100){
+           while(n++ <100)
            	System.out.println("ClientReceivePacket:--->from"+packet.getAddress()+"length:"+packet.getLength()+
            			"content:"+Arrays.toString(packet.getData()));
-//           }
            audioTrack.write(packet.getData(),0,packet.getData().length);
         } catch (Exception e) {
             e.printStackTrace();

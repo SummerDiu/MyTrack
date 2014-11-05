@@ -58,6 +58,7 @@ public class RecordThread  extends Thread {
             packet.setAddress(ip);
             packet.setPort(port);//; 
             socket.send(packet);
+            while(n++ <100)
             System.out.println("ClientSendPacket:--->to"+packet.getAddress()+"length:"+packet.getLength()+
             			"content:"+Arrays.toString(packet.getData()));
             
